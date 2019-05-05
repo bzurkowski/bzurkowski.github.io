@@ -242,6 +242,7 @@
 <h2 id="outline">Outline</h2>
 <p>In this chapter you will learn:</p>
 <ul>
+<li>What is a container.</li>
 <li>How to run a container from an image.</li>
 <li>How to check containers running in your system.</li>
 <li>How to execute a command in a running container.</li>
@@ -249,6 +250,10 @@
 <li>How to restart, stop and remove containers.</li>
 </ul>
 <h2 id="walkthrough">Walkthrough</h2>
+<p>Container is an isolated <strong>PROCESS</strong> in user space sharing OS kernel with other containers (processes). Container management tools such as Docker leverage existing OS mechanisms such as <em>namespaces</em> and <em>cgroups</em> to <strong>limit what a given process can see</strong> and <strong>how much resources a given process can use</strong>. Moreover, they use <em>chroot</em> to replace the root filesystem of the process with the content of a container image.</p>
+<p>These mechanisms enable emulation of distinct OS environment for a process and limit the impact of that process on other processes to the bare minimum.</p>
+<p><img src="assets/containers-vs-vms.png" alt=""></p>
+<p>There is no hypervisor involved. There is no separate instance of an operating system - guest OS. Consequently, <strong>containers take up much less space than VMs</strong> (container images are typically tens of MBs in size, VMs take GBs in size) and <strong>start in miliseconds</strong> (in opposition to VMs which require several minutes to boot guest OS and start the application).</p>
 <h3 id="task-1-running-containers">Task 1: Running containers</h3>
 <p>In order to run our first container we will use the <code>docker run</code> command. It has the following syntax:</p>
 <pre><code class="lang-bash">$ docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
@@ -270,7 +275,7 @@ drwxr-xr-x    5 root     root          4096 Apr  8 20:30 lib
 ...
 </code></pre>
 <p><strong>Analyze the command output.</strong></p>
-<p>Docker first pulls a missing <code>alpine</code> image from a registry using tag <code>latest</code>. Then, it creates a container from that image, and executes <code>ls -l</code> command inside of the container. Note the result of runnig <code>ls</code> command in above output:</p>
+<p>Docker first pulls a missing <code>alpine</code> image from a registry using tag <code>latest</code>. Then, it creates a container from that image, and executes <code>ls -l</code> command inside the container. Note the result of runnig <code>ls</code> command in above output:</p>
 <pre><code class="lang-bash">total 56
 drwxr-xr-x    2 root     root          4096 Apr  8 20:30 bin
 drwxr-xr-x    5 root     root           340 May  4 10:34 dev
@@ -386,7 +391,7 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 <pre><code class="lang-dockerfile"><span class="hljs-keyword">CMD</span> <span class="bash">[<span class="hljs-string">&quot;redis-server&quot;</span>]
 </span></code></pre>
 <p>It starts Redis daemon in the foreground since this is what most users would do with the image - start the Redis service.</p>
-<p>Let&apos;s run a Redis container without specifying a command:</p>
+<p>Then, let&apos;s run a Redis container without specifying a command:</p>
 <pre><code class="lang-bash">$ docker run redis
 1:C 04 May 2019 15:34:53.491 <span class="hljs-comment"># oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo</span>
 1:C 04 May 2019 15:34:53.492 <span class="hljs-comment"># Redis version=5.0.4, bits=64, commit=00000000, modified=0, pid=1, just started</span>
@@ -400,7 +405,7 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 <p><strong>Analyze the command output.</strong></p>
 <p>Docker executes the default command, which starts the Redis server and then starts populating log entries to the <code>stdout</code>.</p>
 <p>This may not be the most effective way to start containers with long-running processes such as Redis or Nginx servers, because they block the current user session. We would have to every-time run a new terminal session to start a new container.</p>
-<p>Stop the Redis container blocking our current session by hitting <code>ctrl</code> + <code>^c</code>:</p>
+<p>Stop the Redis container by hitting <code>ctrl</code> + <code>^c</code>:</p>
 <pre><code class="lang-bash">^C1:signal-handler (1557003118) Received SIGINT scheduling shutdown...
 1:M 04 May 2019 20:51:58.619 <span class="hljs-comment"># User requested shutdown...</span>
 1:M 04 May 2019 20:51:58.619 * Saving the final RDB snapshot before exiting.
@@ -437,7 +442,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 </code></pre>
 <h3 id="task-7-executing-commands-in-running-containers">Task 7: Executing commands in running containers</h3>
 <p>Until now, we have been able to execute commands in a container by providing them as an argument to the <code>docker run</code> command or by launching an interactive session.</p>
-<p>How to execute the command when the container has already been started?</p>
+<p>How to execute the command if the container has already been started?</p>
 <p>To run a command in a running container, we can use the <code>docker exec</code> command. It has the following syntax:</p>
 <pre><code class="lang-bash">$ docker <span class="hljs-built_in">exec</span> [OPTIONS] CONTAINER COMMAND [ARG...]
 </code></pre>
@@ -459,7 +464,7 @@ $ root@ef5fe670c3dd:/var/log/nginx# cat error.log
 $ exit
 </code></pre><h3 id="task-8-restarting-containers">Task 8: Restarting containers</h3>
 <p>At some point, we may want to stop some of the containers to temporarily release the system resources (memory, processor) and start other containers, while retaining the ability to restart the stopped ones.</p>
-<p><code>docker stop</code> command enables to stop a container process. The memory and processor resources are then released, while the container data is still persisted on the disk. Later, it is possible to restart the stopped container process using <code>docker start</code> command. It starts the container process with a default command or a command initialily specified in <code>docker run</code> command.</p>
+<p><code>docker stop</code> command enables to stop a container process. The memory and processor resources are then released, while the container data is still persisted on the disk. Later, it is possible to restart the stopped container process using <code>docker start</code> command. It starts the container process with a default command or a command specified initialily in <code>docker run</code>.</p>
 <p>List all running containers:</p>
 <pre><code class="lang-bash">$ docker ps
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
@@ -546,7 +551,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Managing containers","level":"1.4","depth":1,"next":{"title":"Persistent volumes","level":"1.5","depth":1,"path":"persistent-volumes.md","ref":"persistent-volumes.md","articles":[]},"previous":{"title":"Managing images","level":"1.3","depth":1,"path":"managing-images.md","ref":"managing-images.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"managing-containers.md","mtime":"2019-05-05T10:33:04.835Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-05T13:06:28.163Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Managing containers","level":"1.4","depth":1,"next":{"title":"Persistent volumes","level":"1.5","depth":1,"path":"persistent-volumes.md","ref":"persistent-volumes.md","articles":[]},"previous":{"title":"Managing images","level":"1.3","depth":1,"path":"managing-images.md","ref":"managing-images.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"managing-containers.md","mtime":"2019-05-05T16:31:10.526Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-05T16:47:44.735Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

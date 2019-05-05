@@ -277,7 +277,7 @@ app = Flask(__name__)
 <pre><code>flask
 </code></pre><h3 id="task-2-preparing-a-dockerfile">Task 2: Preparing a Dockerfile</h3>
 <p>In order to package our sample application into a Docker image, we need to write a <code>Dockerfile</code>.</p>
-<p>Dockerfile is a text file containing all the instructions that the Docker engine needs to know in order to prepare the application environment:</p>
+<p>Dockerfile is a text file containing all instructions that the Docker engine needs to know in order to prepare the application environment:</p>
 <ul>
 <li>a base Docker image to run from,</li>
 <li>copying application code,</li>
@@ -289,7 +289,7 @@ app = Flask(__name__)
 <pre><code class="lang-dockerfile"><span class="hljs-comment"># Comment</span>
 DIRECTIVE arguments
 </code></pre>
-<p>Docker runs the directives in order. A Dockerfile <strong>must</strong> start with a <code>FROM</code> directive, which specifies a base image from which a new image should be built.</p>
+<p>Docker runs the directives in order. A Dockerfile <strong>must</strong> start with a <code>FROM</code> directive, which specifies a base image from which a new image should be built (e.g. <code>ubuntu</code>).</p>
 <p>Here are the most common directives that can be used in a Dockerfile:</p>
 <ul>
 <li><p><code>FROM &lt;image&gt;[:&lt;tag&gt;]</code></p>
@@ -300,15 +300,15 @@ DIRECTIVE arguments
 </code></pre>
 </li>
 <li><p><code>WORKDIR &lt;path&gt;</code></p>
-<p>Sets the working directory for any RUN, CMD, ENTRYPOINT, COPY and ADD instructions that follow it in the Dockerfile.</p>
+<p>Sets the working directory for any <code>RUN</code>, <code>CMD</code>, <code>ENTRYPOINT</code>, <code>COPY</code> and <code>ADD</code> instructions that follow it in the Dockerfile.</p>
 <p>Examples:</p>
 <pre><code class="lang-dockerfile"><span class="hljs-keyword">WORKDIR</span> <span class="bash">/my/custom/path
 </span><span class="hljs-keyword">RUN</span> <span class="bash"><span class="hljs-built_in">pwd</span>
 </span></code></pre>
-<p>The output of the final <code>pwd</code> command in the aboveexample would be <code>/my/custom/path</code></p>
+<p>The output of the final <code>pwd</code> command in the above example would be <code>/my/custom/path</code></p>
 </li>
 <li><p><code>COPY &lt;src&gt;... &lt;dest&gt;</code></p>
-<p>Copies new files or directories <code>&lt;src&gt;</code> and adds them to the filesystem of the image at the path <code>&lt;dest&gt;</code>.</p>
+<p>Copies new files or directories from <code>&lt;src&gt;</code> and adds them to the filesystem of the image at the path <code>&lt;dest&gt;</code>.</p>
 <p>Examples:</p>
 <pre><code class="lang-dockerfile"><span class="hljs-keyword">COPY</span> <span class="bash"><span class="hljs-built_in">test</span> relativeDir/
 </span><span class="hljs-keyword">COPY</span> <span class="bash">hom* /mydir/
@@ -402,11 +402,15 @@ sample_app          v1.0                f4922ef0cb8e        About an hour ago   
 <p>Now, we can see two instances of <code>sample_app</code> image. One is tagged with <code>v1.0</code>. Second is tagged with <code>latest</code>. Even though the <code>SIZE</code> column informs that each instance consumes <code>91.8MB</code> of disk space (<code>183.6MB</code> in total), in fact, the two images still consume <code>91.8MB</code>, because image tag is just a pointer to the source image.</p>
 <h2 id="exercises">Exercises</h2>
 <ol>
+<li><p>Run a container from the built image and publish the application port. Access the application in a browser. The page should display caption <code>Hello World!</code>.</p>
+</li>
 <li><p>Modify the sample application to print something different than <code>Hello World!</code>.</p>
 </li>
 <li><p>Rebuild the application image and tag it with label <code>v1.1</code>.</p>
 </li>
 <li><p>Mark version <code>v1.1</code> of the image as <code>latest</code>.</p>
+</li>
+<li><p>Run another container from the newer version of the image and access the application in a browser.</p>
 </li>
 </ol>
 
@@ -452,7 +456,7 @@ sample_app          v1.0                f4922ef0cb8e        About an hour ago   
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Building images","level":"1.7","depth":1,"next":{"title":"Docker Compose","level":"1.8","depth":1,"path":"docker-compose.md","ref":"docker-compose.md","articles":[]},"previous":{"title":"Port publishing","level":"1.6","depth":1,"path":"port-publishing.md","ref":"port-publishing.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"building-images.md","mtime":"2019-05-05T12:16:02.996Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-05T13:06:28.163Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Building images","level":"1.7","depth":1,"next":{"title":"Docker Compose","level":"1.8","depth":1,"path":"docker-compose.md","ref":"docker-compose.md","articles":[]},"previous":{"title":"Port publishing","level":"1.6","depth":1,"path":"port-publishing.md","ref":"port-publishing.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"building-images.md","mtime":"2019-05-05T16:44:40.290Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-05T16:47:44.735Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
