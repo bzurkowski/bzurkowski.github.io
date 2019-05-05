@@ -1,0 +1,438 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Persistent volumes · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="port-publishing.html" />
+    
+    
+    <link rel="prev" href="managing-containers.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="installation.html">
+            
+                <a href="installation.html">
+            
+                    
+                    Docker installation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="managing-images.html">
+            
+                <a href="managing-images.html">
+            
+                    
+                    Managing images
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="managing-containers.html">
+            
+                <a href="managing-containers.html">
+            
+                    
+                    Managing containers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.5" data-path="persistent-volumes.html">
+            
+                <a href="persistent-volumes.html">
+            
+                    
+                    Persistent volumes
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="port-publishing.html">
+            
+                <a href="port-publishing.html">
+            
+                    
+                    Port publishing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="building-images.html">
+            
+                <a href="building-images.html">
+            
+                    
+                    Building images
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="docker-compose.html">
+            
+                <a href="docker-compose.html">
+            
+                    
+                    Docker Compose
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >Persistent volumes</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="persistent-volumes">Persistent volumes</h1>
+<h2 id="outline">Outline</h2>
+<p>In this chapter you will learn:</p>
+<ul>
+<li>Why perisistent volumes are important.</li>
+<li>How to create a virtual storage volume for storing persistent data generated by containers.</li>
+<li>How to attach a volume to a container.</li>
+</ul>
+<h2 id="walkthrough">Walkthrough</h2>
+<h3 id="task-1-why-do-we-need-persistent-storage-volumes">Task 1: Why do we need persistent storage volumes</h3>
+<p>By default all files created inside a container are stored on an ephemeral filesystem layer. This layer is tightly coupled with the container lifecycle. After the container is removed its associated writable layer is also removed. As a result, all data populated by the container is lost. The objective of this task is to ilustrate the problem.</p>
+<p>Start with running a Redis container in the background:</p>
+<pre><code class="lang-bash">$ docker run --name novoltest <span class="hljs-_">-d</span> redis
+</code></pre>
+<p>Create a file in the running container:</p>
+<pre><code class="lang-bash">$ docker <span class="hljs-built_in">exec</span> novoltest touch testfile.txt
+</code></pre>
+<p>Ensure that the file is present in the container:</p>
+<pre><code class="lang-bash">$ docker <span class="hljs-built_in">exec</span> novoltest ls <span class="hljs-_">-l</span> testfile.txt
+-rw-r--r-- 1 root root 0 May  4 21:47 testfile.txt
+</code></pre>
+<p>Restart the container:</p>
+<pre><code class="lang-bash">$ docker stop novoltest
+novoltest
+$ docker start novoltest
+novoltest
+</code></pre>
+<p>Check if the file is present in the container:</p>
+<pre><code class="lang-bash">$ docker <span class="hljs-built_in">exec</span> novoltest ls <span class="hljs-_">-l</span> testfile.txt
+-rw-r--r-- 1 root root 0 May  4 21:47 testfile.txt
+</code></pre>
+<p>The file is still present in the container.</p>
+<p>Now, let&apos;s remove the container and start a new one:</p>
+<pre><code class="lang-bash">$ docker stop novoltest &amp;&amp; docker rm novoltest
+$ docker run --name novoltest <span class="hljs-_">-d</span> redis
+</code></pre>
+<p>Check if the file is present in the container:</p>
+<pre><code class="lang-bash">$ docker <span class="hljs-built_in">exec</span> novoltest ls <span class="hljs-_">-l</span> testfile.txt
+ls: cannot access <span class="hljs-string">&apos;testfile.txt&apos;</span>: No such file or directory
+</code></pre>
+<p><code>testfile.txt</code> is no longer present in the container, because it was stored only in the ephemeral filesystem layer created for the previous container. That layer has been removed with the container. The new container has its own writable layer created with an empty slate.</p>
+<h3 id="task-2-creating-a-volume">Task 2: Creating a volume</h3>
+<p>Volumes are the preferred mechanism for persisting data generated by containers. They are directories created and managed by Docker engine in the host filesystem. Volumes are not dependent on container&apos;s lifecycle and as such are not removed with a container.</p>
+<p>Let&apos;s create a sample volume:</p>
+<pre><code class="lang-bash">$ docker volume create mydata
+</code></pre>
+<p>Confirm that the volume has been successfully created by listing it:</p>
+<pre><code class="lang-bash">$ docker volume list
+DRIVER              VOLUME NAME
+<span class="hljs-built_in">local</span>               2b3b42e40634ef8a95884eb6c7813402caa65988e90f699c8803480<span class="hljs-built_in">fc</span>393e25a
+...
+<span class="hljs-built_in">local</span>               mydata
+</code></pre>
+<p>Display volume details:</p>
+<pre><code class="lang-bash">$ docker volume inspect mydata
+[
+    {
+        <span class="hljs-string">&quot;CreatedAt&quot;</span>: <span class="hljs-string">&quot;2019-05-05T00:03:32+02:00&quot;</span>,
+        <span class="hljs-string">&quot;Driver&quot;</span>: <span class="hljs-string">&quot;local&quot;</span>,
+        <span class="hljs-string">&quot;Labels&quot;</span>: {},
+        <span class="hljs-string">&quot;Mountpoint&quot;</span>: <span class="hljs-string">&quot;/var/lib/docker/volumes/mydata/_data&quot;</span>,
+        <span class="hljs-string">&quot;Name&quot;</span>: <span class="hljs-string">&quot;mydata&quot;</span>,
+        <span class="hljs-string">&quot;Options&quot;</span>: {},
+        <span class="hljs-string">&quot;Scope&quot;</span>: <span class="hljs-string">&quot;local&quot;</span>
+    }
+]
+</code></pre>
+<p><strong>Analyze the command output.</strong></p>
+<p>Note location of the created volume: <code>/var/lib/docker/volumes/mydata/_data</code>. <code>/var/lib/docker/volumes</code> is a Docker-managed directory in which all volumes are stored. Nested <code>mydata/_data</code> directory is a concrete instance of our <code>mydata</code> volume object.</p>
+<p>The volume directory can be accessed from the Docker host:</p>
+<pre><code class="lang-bash">$ sudo ls <span class="hljs-_">-l</span> /var/lib/docker/volumes/mydata/_data
+</code></pre>
+<h3 id="task-3-attaching-volume-to-a-container">Task 3: Attaching volume to a container</h3>
+<p>After creating a volume we can attach it to a new container using <code>--mount</code> option in <code>docker run</code> command. It has the following syntax:</p>
+<pre><code>--mount type=volume,source=VOLUME_NAME,destination=CONTAINER_PATH[,readonly]
+</code></pre><p><code>VOLUME_NAME</code> is a name of an existing volume object. <code>CONTAINER_PATH</code> is a path inside a container. Docker will mount the volume in the provided path and the path will be accessible by processes running inside the container.</p>
+<p>Let&apos;s create a Redis container with persistent volume attached:</p>
+<pre><code>$ docker run \
+  -d \
+  --name voltest1 \
+  --mount type=volume,source=mydata,destination=/data \
+  redis redis-server --appendonly yes
+</code></pre><p>The above command runs a container from Redis image (<code>redis</code>) in the background (<code>-d</code>), names it <code>voltest1</code> (<code>--name</code>), mounts volume <code>mydata</code> under <code>/data</code> path in the container (<code>--mount</code>), and executes <code>redis-server --appendonly yes</code> command inside the container.</p>
+<p>By providing option <code>--appendonly yes</code> we instruct Redis to store data in <code>/data</code> directory under which the volume is mounted. Our goal is to ensure persistent data store for our Redis service.</p>
+<p>Add some sample data into Redis using <code>redis-cli</code> utility:</p>
+<pre><code>$ docker exec --interactive --tty voltest1 bash
+$ root@b527993a6929:/data# redis-cli
+$ 127.0.0.1:6379&gt; set foo bar
+OK
+$ 127.0.0.1:6379&gt; set bar baz
+OK
+$ 127.0.0.1:6379&gt; exit
+$ root@b527993a6929:/data# exit
+exit
+</code></pre><p>Now, remove the Redis container and start a new one with the same storage volume attached:</p>
+<pre><code class="lang-bash">$ docker stop voltest1 &amp;&amp; docker rm voltest1
+$ docker run \
+  <span class="hljs-_">-d</span> \
+  --name voltest1 \
+  --mount <span class="hljs-built_in">type</span>=volume,<span class="hljs-built_in">source</span>=mydata,destination=/data \
+  redis redis-server --appendonly yes
+</code></pre>
+<p>Ensure that Redis data is restored after removal of the previous container:</p>
+<pre><code>$ docker exec --interactive --tty voltest1 bash
+$ root@b527993a6929:/data# redis-cli
+$ 127.0.0.1:6379&gt; get foo
+&quot;bar&quot;
+$ 127.0.0.1:6379&gt; get bar
+&quot;baz
+$ 127.0.0.1:6379&gt; exit
+$ root@b527993a6929:/data# exit
+exit
+</code></pre><p><strong>Analyze the command output.</strong></p>
+<p>Keys <code>foo</code> and <code>bar</code> created in the previous container are still present in the new container even though the previous container has been removed.</p>
+<h2 id="exercises">Exercises</h2>
+<ol>
+<li>Run another <code>Redis</code> container with <code>mydata</code> volume attached. Ensure that data is shared between containers via the storage volume, e.g., set different keys on each Redis instance using <code>redis-cli</code> utility and verify that both instances have the same sets of keys.</li>
+</ol>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="managing-containers.html" class="navigation navigation-prev " aria-label="Previous page: Managing containers">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="port-publishing.html" class="navigation navigation-next " aria-label="Next page: Port publishing">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Persistent volumes","level":"1.5","depth":1,"next":{"title":"Port publishing","level":"1.6","depth":1,"path":"port-publishing.md","ref":"port-publishing.md","articles":[]},"previous":{"title":"Managing containers","level":"1.4","depth":1,"path":"managing-containers.md","ref":"managing-containers.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"persistent-volumes.md","mtime":"2019-05-05T12:40:59.691Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-05T13:06:28.163Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

@@ -1,0 +1,424 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Managing images · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="managing-containers.html" />
+    
+    
+    <link rel="prev" href="installation.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="installation.html">
+            
+                <a href="installation.html">
+            
+                    
+                    Docker installation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3" data-path="managing-images.html">
+            
+                <a href="managing-images.html">
+            
+                    
+                    Managing images
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="managing-containers.html">
+            
+                <a href="managing-containers.html">
+            
+                    
+                    Managing containers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="persistent-volumes.html">
+            
+                <a href="persistent-volumes.html">
+            
+                    
+                    Persistent volumes
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="port-publishing.html">
+            
+                <a href="port-publishing.html">
+            
+                    
+                    Port publishing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="building-images.html">
+            
+                <a href="building-images.html">
+            
+                    
+                    Building images
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="docker-compose.html">
+            
+                <a href="docker-compose.html">
+            
+                    
+                    Docker Compose
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >Managing images</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="managing-images">Managing images</h1>
+<h2 id="outline">Outline</h2>
+<p>In this chapter you will learn:</p>
+<ul>
+<li>How to list Docker images downloaded into your system.</li>
+<li>How to search for a specific image in a registry.</li>
+<li>How to download an image from a registry into your system.</li>
+<li>How to remove downloaded images.</li>
+</ul>
+<h2 id="walkthrough">Walkthrough</h2>
+<h3 id="task-1-listing-images">Task 1: Listing images</h3>
+<p>Start with listing all Docker images downloaded into your system:</p>
+<pre><code class="lang-bash">$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hello-world         latest              fce289e99eb9        4 months ago        1.84kB
+</code></pre>
+<p><strong>Analyze the command output.</strong></p>
+<p>The <code>hello-world</code> image has been downloaded when we verified Docker installation using <code>docker run</code> command. <code>docker run</code> downloads an image automatically before running a container if the image is not available in the system.</p>
+<h3 id="task-2-removing-images">Task 2: Removing images</h3>
+<p><code>hello-world</code> image is great for testing Docker installation, but not very useful afterwards. Let&apos;s remove it to save disk space and ensure an empty slate for further exercises:</p>
+<pre><code class="lang-bash">$ docker rmi hello-world
+Untagged: hello-world:latest
+Untagged: hello-world@sha256:92695bc579f31df7a63da6922075d0666e565ceccad16b59c3374d2cf4e8e50e
+Deleted: sha256:fce289e99eb9bca977dae136fbe2a82b6b7d4c372474c9235adc1741675f587e
+Deleted: sha256:af0b15c8625bb1938f1d7b17081031f649fd14e6b233688eea3c5483994a66a3
+</code></pre>
+<p>Confirm successful removal by listing images again:</p>
+<pre><code class="lang-bash">$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+</code></pre>
+<h3 id="task-3-searching-images">Task 3: Searching images</h3>
+<p>Now, let&apos;s say that we are developing an application consiting of three components: a Ruby on Rails website, a Nginx web-server running in front, and a Redis database for storing user data.</p>
+<p>We may want to ensure that Docker images required for running these components are available in the registry.</p>
+<p>Check if there is an image for Redis:</p>
+<pre><code class="lang-bash">$ docker search redis
+NAME                             DESCRIPTION                                     STARS               OFFICIAL            AUTOMATED
+redis                            Redis is an open <span class="hljs-built_in">source</span> key-value store that&#x2026;   6839                [OK]
+bitnami/redis                    Bitnami Redis Docker Image                      112                                     [OK]
+sameersbn/redis                                                                  76                                      [OK]
+grokzen/redis-cluster            Redis cluster 3.0, 3.2, 4.0 &amp; 5.0               45
+</code></pre>
+<p><strong>Analyze the command output.</strong></p>
+<p>Note the columns titled <code>STARS</code> and <code>OFFICIAL</code>. The former indicates image popularity - the more stars the more users tested and appreciated the image. The latter informs whether an image is maintained by an open source/commercial project or third-party contributors.</p>
+<p>Always strive to choose official images. If one does not exist, treat number of stars as the secondary criterion.</p>
+<p>Docker images can be also found in a <a href="https://hub.docker.com/" target="_blank">Docker Hub web browser</a>. Try to find images for all application components using the website.</p>
+<h3 id="task-4-pulling-images">Task 4: Pulling images</h3>
+<p>In order to download images found in the registry there is <code>docker pull</code> command. It has the following syntax:</p>
+<pre><code class="lang-bash">$ docker pull NAME[:TAG]
+</code></pre>
+<p>It takes a reference to an image as its argument. Image <code>NAME</code> specifies the application/service that we want to use (e.g. <code>redis</code>, <code>nginx</code>, <code>mysql</code>), whereas optional <code>TAG</code> indicates a variant of that application, e.g. version: <code>v1.2.1</code>.</p>
+<p>You can find available image tags in image documentation on Docker Hub. Take a look at the documentation of <a href="https://hub.docker.com/_/redis" target="_blank">Redis</a>.</p>
+<p>Let&apos;s pull an image for Redis:</p>
+<pre><code class="lang-bash">$ docker pull redis
+Using default tag: latest
+latest: Pulling from library/redis
+27833a3ba0a5: Pull complete
+cde8019a4b43: Pull complete
+97a473b37fb2: Pull complete
+c6fe0dfbb7e3: Pull complete
+39c8f5ba1240: Pull complete
+cfbdd870cf75: Pull complete
+Digest: sha256:000339fb57e0ddf2d48d72f3341e47a8ca3b1beae9bdcb25a96323095b72a79b
+Status: Downloaded newer image <span class="hljs-keyword">for</span> redis:latest
+</code></pre>
+<p><strong>Analyze the command output.</strong></p>
+<p>Note that by default Docker attempts to download an image tagged as <code>latest</code>. This is a global convention. Tag <code>latest</code> usually points to the latest version of an image (and the application installed in that image).</p>
+<p>Docker downloads layers of the image one by one. Hashes <code>27833a3ba0a5</code>, <code>cde8019a4b43</code> etc. constitute unique layer identifiers.</p>
+<p>List the images to confirm the successful image pull:</p>
+<pre><code class="lang-bash">$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+redis               latest              a55fbf438dfd        5 weeks ago         95MB
+</code></pre>
+<p>Pulling the latest images without specifying a tag is useful for development and testing purposes, but might be risky in production. Applications are often bound to an interface of a particular servcie version, e.g. our Rails application may use specific Redis interface that is available only till version <code>4.0.14</code> and was dropped in newer versions.</p>
+<p>Therefore, let&apos;s pull the specific version of Redis image:</p>
+<pre><code class="lang-bash">$ docker pull redis:4.0.14
+4.0.14: Pulling from library/redis
+27833a3ba0a5: Already exists
+cde8019a4b43: Already exists
+97a473b37fb2: Already exists
+c5b25739b664: Pull complete
+304d8b43da6c: Pull complete
+2d5b26f886bd: Pull complete
+Digest: sha256:400c9f87bbe140d594d201ba0aabada8e1c0f6aaf5b54fa889f5d311377b2546
+Status: Downloaded newer image <span class="hljs-keyword">for</span> redis:4.0.14
+</code></pre>
+<p>Note that this time Docker attempts to pull version <code>4.0.14</code> instead of the <code>latest</code> one. Also, several image layers have been reused: <code>27833a3ba0a5</code>, <code>cde8019a4b43</code> and <code>97a473b37fb2</code> - the exact same layers have been already downloaded when we pulled the <code>latest</code> Redis.</p>
+<p>List the images to confirm the successful image pull:</p>
+<pre><code class="lang-bash">$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+redis               4.0.14              14433f4e77ab        5 weeks ago         83.4MB
+redis               latest              a55fbf438dfd        5 weeks ago         95MB
+</code></pre>
+<h2 id="exercises">Exercises</h2>
+<ol>
+<li><p>Search for images related to at least three technologies that you use on a daily basis (web framework, programming language, database etc.):</p>
+<pre><code class="lang-bash">$ docker search &lt;your-favourite-tech&gt;
+</code></pre>
+</li>
+<li><p>Pull an image for <code>Nginx</code> version <code>1.16.0</code>.</p>
+</li>
+<li>Pull the latest image for <code>RabbitMQ</code>.</li>
+<li>Fetch list of all downloaded images.</li>
+<li>Delete image for <code>RabbitMQ</code>.</li>
+</ol>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="installation.html" class="navigation navigation-prev " aria-label="Previous page: Docker installation">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="managing-containers.html" class="navigation navigation-next " aria-label="Next page: Managing containers">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Managing images","level":"1.3","depth":1,"next":{"title":"Managing containers","level":"1.4","depth":1,"path":"managing-containers.md","ref":"managing-containers.md","articles":[]},"previous":{"title":"Docker installation","level":"1.2","depth":1,"path":"installation.md","ref":"installation.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"managing-images.md","mtime":"2019-05-05T10:22:03.758Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-05T13:06:28.163Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
