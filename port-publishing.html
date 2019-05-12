@@ -246,7 +246,7 @@
 <li>How to publish container ports.</li>
 </ul>
 <h2 id="walkthrough">Walkthrough</h2>
-<p>By default containers do not publish any ports to the outside world. Ports are opened only for internal container-to-container communication in a Docker network. In order to access container ports from the outside of the container, ports must be published explicitly via <code>docker run</code> command.</p>
+<p>By default containers do not publish any ports to the outside world. Ports are opened only for internal container-to-container or host-to-container communication in a Docker network. In order to access container ports from the outside of the Docker network, e.g. via public host IP or host loopback address, ports must be published explicitly via <code>docker run</code> command.</p>
 <h3 id="task-1-why-do-we-need-publish-container-ports">Task 1: Why do we need publish container ports</h3>
 <p>The objective of this task is to ilustrate the problem of publishing ports in containers.</p>
 <p>Let&apos;s run a container with Nginx:</p>
@@ -258,12 +258,35 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 dc8defc10363        nginx               <span class="hljs-string">&quot;nginx -g &apos;daemon of&#x2026;&quot;</span>   11 seconds ago       Up 9 seconds        80/tcp              noportpub
 </code></pre>
 <p><strong>Analyze the command output.</strong></p>
-<p>The container exposes port <code>80</code> for internal <code>HTTP</code> communication (<code>PORTS</code> column).</p>
-<p>Let&apos;s try to communicate from the Docker host with the Nginx server running in the container:</p>
+<p>Note that the container exposes port <code>80</code> for internal <code>HTTP</code> communication (<code>PORTS</code> column).</p>
+<p>Now, fetch the IP of the container in the Docker network:</p>
+<pre><code class="lang-bash">$ docker inspect --format <span class="hljs-string">&apos;{{ .NetworkSettings.IPAddress }}&apos;</span> noportpub
+172.18.0.2
+</code></pre>
+<p>Try to communicate with the Nginx server using obtained internal container IP:</p>
+<pre><code class="lang-bash">$ curl http://172.18.0.2:80
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Welcome to nginx!&lt;/title&gt;
+&lt;style&gt;
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;
+...
+</code></pre>
+<p>The communication succeeds and Nginx server responds with a welcome message. This is because the communication happend in the scope of the internal Docker network.</p>
+<p>Subsequently, let&apos;s try to communicate with the server via loopback address which is an address from outside of the Docker network:</p>
 <pre><code class="lang-bash">$ curl http://localhost:80
 curl: (7) Failed to connect to localhost port 80: Connection refused
 </code></pre>
-<p>The connection has been refused, because firewall rules prevent communication to port <code>80</code> in the container from the ourside of a Docker network.</p>
+<p>The connection has been refused, because default firewall rules prevent communication with port <code>80</code> in the container from the outside of the Docker network.</p>
 <h3 id="task-2-publishing-container-ports">Task 2: Publishing container ports</h3>
 <p>In order to publish a container port there is <code>--publish</code> flag for <code>docker run</code> command. It has the following syntax:</p>
 <pre><code class="lang-bash">--publish HOST_PORT:CONTAINER_PORT
@@ -289,25 +312,11 @@ curl: (7) Failed to connect to localhost port 80: Connection refused
 &lt;/head&gt;
 &lt;body&gt;
 &lt;h1&gt;Welcome to nginx!&lt;/h1&gt;
-&lt;p&gt;If you see this page, the nginx web server is successfully installed and
-working. Further configuration is required.&lt;/p&gt;
-
-&lt;p&gt;For online documentation and support please refer to
-&lt;a href=&quot;http://nginx.org/&quot;&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;
-Commercial support is available at
-&lt;a href=&quot;http://nginx.com/&quot;&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;Thank you for using nginx.&lt;/em&gt;&lt;/p&gt;
-&lt;/body&gt;
-&lt;/html&gt;
+...
 </code></pre><p>This time the communication succeed. You may also try to access Nginx via the web browser by entering the same URL.</p>
 <h2 id="exercises">Exercises</h2>
 <ol>
 <li>Run a <code>Redis</code> container with port <code>6379</code> exposed to the <em>outside</em> - map host port <code>6000</code> to container port <code>6379</code>.</li>
-<li><p>Install <code>redis-cli</code> on the Docker host to access the Redis service from <em>the outside</em>:</p>
-<pre><code class="lang-bash">$ sudo apt-get install redis-tools
-</code></pre>
-</li>
 <li><p>Connect to containerized Redis instance from the Docker host and try to set several keys:</p>
 <pre><code class="lang-bash">$ redis-cli -h localhost -p 6000
 </code></pre>
@@ -356,7 +365,7 @@ Commercial support is available at
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Port publishing","level":"1.6","depth":1,"next":{"title":"Building images","level":"1.7","depth":1,"path":"building-images.md","ref":"building-images.md","articles":[]},"previous":{"title":"Persistent volumes","level":"1.5","depth":1,"path":"persistent-volumes.md","ref":"persistent-volumes.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"port-publishing.md","mtime":"2019-05-05T16:38:08.276Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-05T17:45:06.932Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Port publishing","level":"1.6","depth":1,"next":{"title":"Building images","level":"1.7","depth":1,"path":"building-images.md","ref":"building-images.md","articles":[]},"previous":{"title":"Persistent volumes","level":"1.5","depth":1,"path":"persistent-volumes.md","ref":"persistent-volumes.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"port-publishing.md","mtime":"2019-05-12T13:52:11.154Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-12T14:05:40.185Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

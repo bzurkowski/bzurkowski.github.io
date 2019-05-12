@@ -247,7 +247,7 @@
 <li>How to attach a volume to a container.</li>
 </ul>
 <h2 id="walkthrough">Walkthrough</h2>
-<p>By default all files created inside a container are stored on an ephemeral filesystem layer. This layer is tightly coupled with the container lifecycle. After the container is removed its associated writable layer is also removed. As a result, all data populated by the container is lost.</p>
+<p>By default all files created inside a container are stored on an ephemeral filesystem layer. This layer is tightly coupled with the container lifecycle. After the container is removed its associated writable layer is also removed. Consequently, all data populated by the container is lost.</p>
 <h3 id="task-1-why-do-we-need-persistent-storage-volumes">Task 1: Why do we need persistent storage volumes</h3>
 <p>The objective of this task is to ilustrate the problem of persistent data storage in containers.</p>
 <p>Start with running a Redis container in the background:</p>
@@ -271,7 +271,7 @@ novoltest
 -rw-r--r-- 1 root root 0 May  4 21:47 testfile.txt
 </code></pre>
 <p>The file is still present in the container.</p>
-<p>Now, let&apos;s remove the container and start a new one:</p>
+<p>Now, let&apos;s remove the container and start a new one from the same image:</p>
 <pre><code class="lang-bash">$ docker stop novoltest &amp;&amp; docker rm novoltest
 $ docker run --name novoltest <span class="hljs-_">-d</span> redis
 </code></pre>
@@ -400,7 +400,7 @@ exit
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Persistent volumes","level":"1.5","depth":1,"next":{"title":"Port publishing","level":"1.6","depth":1,"path":"port-publishing.md","ref":"port-publishing.md","articles":[]},"previous":{"title":"Managing containers","level":"1.4","depth":1,"path":"managing-containers.md","ref":"managing-containers.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"persistent-volumes.md","mtime":"2019-05-05T16:34:37.820Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-05T17:45:06.932Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Persistent volumes","level":"1.5","depth":1,"next":{"title":"Port publishing","level":"1.6","depth":1,"path":"port-publishing.md","ref":"port-publishing.md","articles":[]},"previous":{"title":"Managing containers","level":"1.4","depth":1,"path":"managing-containers.md","ref":"managing-containers.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"persistent-volumes.md","mtime":"2019-05-12T13:28:01.701Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-12T14:05:40.185Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
